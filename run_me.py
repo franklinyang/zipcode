@@ -1,16 +1,28 @@
+import csv
 import sys
 
 import zipcode
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 3, 'Please specify two zipcodes to calculate distance between'
-    zipcode_1 = sys.argv[1]
-    zipcode_2 = sys.argv[2]
-    latlong_cambridge = zipcode.get_lat_and_long(zipcode_1) 
-    latlong_texas = zipcode.get_lat_and_long(zipcode_2) 
-    print 'Distance between {zipcode_1} and {zipcode_2} is {distance} miles'.format(
-        zipcode_1=zipcode_1,
-        zipcode_2=zipcode_2,
-        distance=zipcode.calculate_distance(latlong_cambridge, latlong_texas)
-    )
+    assert len(sys.argv) == 2, 'Please specify filename'
+    filename = sys.argv[1]
+
+    # open new file for writing
+    with open('zipcodes_with_distances.csv', 'w') as csv_output:
+        fieldnames = ['zipcode1', 'zipcode2', 'distance (mi)']
+        writer = csv.DictWriter(csv_output, fieldnames=fieldnames)
+        writer.writeheader()
+
+        with open(filename) as csvfile_input:
+            reader = csv.DictReader(csvfile_input)
+            for row in reader:
+                latlong_1 = zipcode.get_lat_and_long(row['zipcode1']) 
+                latlong_2 = zipcode.get_lat_and_long(row['zipcode2']) 
+                distance = zipcode.calculate_distance(latlong_1, latlong_2)
+                writer.writerow({
+                    'zipcode1': row['zipcode1'],
+                    'zipcode2': row['zipcode2'],
+                    'distance (mi)': distance
+                })
+    print 'New file created: zipcodes_with_distances.csv'

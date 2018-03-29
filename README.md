@@ -1,4 +1,5 @@
 # zipcode
-
-./install.sh
-python run_me.py <zipcode_1> <zipcode_2>
+./install.sh  
+  
+To run the script:
+python run_me.py sample_zipcode_file.csv
